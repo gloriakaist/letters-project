@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Letters</title>
+  </head>
+  <body>
+    <h1>Letters: Gloria</h1>
+    <p>hallllooooo!! how's ur day going? </p>
+    <div id="output"></div>
+      <script>
+
+        // find the #output element
+        const outputEl = document.getElementById("output");
+
+        // Utility: make an element, set a few attributes, append to #output
+          function addDomElement(tag, attrs) {
+          const el = document.createElement(tag);
+          if (attrs) {
+           for (const k in attrs) {
+              if (k === "text") {
+          el.textContent = attrs[k];
+        } else {
+          el.setAttribute(k, attrs[k]);
+        }
+      }
+    }
+    outputEl.appendChild(el);
+    return el;
+  }
+        
+// Listen for keydown events
+  document.addEventListener("keydown", function(event) {
+    console.log("Key pressed:", event.key);
+    if (event.key === "Backspace") {
+      if (outputEl.lastChild) {
+        outputEl.removeChild(outputEl.lastChild);
+      }
+
+    } else if (event.key === "c" || event.key === "C") {
+  addDomElement("img", { 
+    src: "https://media2.giphy.com/media/v1.Y2lkPTZjMDliOTUyeTcyNHM4b3Mya3pmczY5MDBldW4zcDE2dGFsYjFvdjBka2RuNGRvdiZlcD12MV9naWZzX3NlYXJjaCZjdT1n/3vcHdyb75qRIA/200w.gif" 
+  });
+    // } else if (event.key === "c" || event.key === "C") {
+  // addDomElement("span", { text: "M-E-O-W" });
+    } else if (event.key === "d" || event.key === "D") {
+      addDomElement("span", { text: "BARK!" });
+
+    } else if (event.key === "v" || event.key === "V") {
+      addDomElement("video", {
+         src: "https://i.imgur.com/Pj87n9Q.mp4",
+         width: "300",
+         height: "300",
+         autoplay: "true",
+         muted: "",
+         controls: ""
+    });
+    } else {
+      addDomElement("span", { text: event.key });
+    }
+  });
+</script>
+  </body>
+</html>
