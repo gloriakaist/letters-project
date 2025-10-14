@@ -1,64 +1,399 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <title>Letters</title>
-  </head>
-  <body>
-    <h1>Letters: Gloria</h1>
-    <p>hallllooooo!! how's ur day going? </p>
-    <div id="output"></div>
-      <script>
-
-        // find the #output element
-        const outputEl = document.getElementById("output");
-
-        // Utility: make an element, set a few attributes, append to #output
-          function addDomElement(tag, attrs) {
-          const el = document.createElement(tag);
-          if (attrs) {
-           for (const k in attrs) {
-              if (k === "text") {
-          el.textContent = attrs[k];
-        } else {
-          el.setAttribute(k, attrs[k]);
-        }
-      }
-    }
-    outputEl.appendChild(el);
-    return el;
+<head>
+<meta charset="utf-8">
+<title>Pet the Cat!</title>
+<style>
+  body {
+    margin: 0;
+    padding: 40px;
+    font-family: Arial, sans-serif;
+    background: #e8e4dc;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
-        
-// Listen for keydown events
-  document.addEventListener("keydown", function(event) {
-    console.log("Key pressed:", event.key);
-    if (event.key === "Backspace") {
-      if (outputEl.lastChild) {
-        outputEl.removeChild(outputEl.lastChild);
+  
+  h1 {
+    color: #5a5a5a;
+    font-weight: normal;
+    margin-bottom: 40px;
+  }
+  
+  #cat-container {
+    position: relative;
+    width: 400px;
+    height: 500px;
+  }
+  
+  /* Cat face */
+  #face {
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle at 30% 40%, #ffffff 0%, #f5f5f5 30%, #e8d5c4 60%, #d4a76a 100%);
+    border-radius: 50% 50% 45% 45%;
+    position: absolute;
+    top: 100px;
+    left: 50px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  }
+  
+  /* Orange patch */
+  #patch {
+    width: 80px;
+    height: 70px;
+    background: #d4763e;
+    border-radius: 50% 60% 40% 50%;
+    position: absolute;
+    top: 120px;
+    right: 60px;
+    opacity: 0.8;
+  }
+  
+  /* Ears */
+  .ear {
+    width: 0;
+    height: 0;
+    border-left: 50px solid transparent;
+    border-right: 50px solid transparent;
+    border-bottom: 80px solid #f5e6d3;
+    position: absolute;
+    filter: drop-shadow(0 3px 5px rgba(0,0,0,0.2));
+  }
+  
+  .ear::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-left: 28px solid transparent;
+    border-right: 28px solid transparent;
+    border-bottom: 50px solid #ffb5a0;
+    left: -28px;
+    top: 15px;
+  }
+  
+  #left-ear {
+    top: 50px;
+    left: 70px;
+    transform: rotate(-15deg);
+  }
+  
+  #right-ear {
+    top: 50px;
+    left: 180px;
+    transform: rotate(15deg);
+  }
+  
+  /* Eyes */
+  .eye {
+    width: 30px;
+    height: 40px;
+    background: radial-gradient(circle at 40% 35%, #6b9c3f 0%, #5a8534 40%, #2a2a2a 45%, #2a2a2a 100%);
+    border-radius: 50%;
+    position: absolute;
+    top: 180px;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.3);
+    transition: all 0.3s ease;
+  }
+  
+  .eye::before {
+    content: '';
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background: white;
+    border-radius: 50%;
+    top: 10px;
+    left: 9px;
+  }
+  
+  #left-eye {
+    left: 120px;
+  }
+  
+  #right-eye {
+    left: 200px;
+  }
+  
+  /* Nose */
+  #nose {
+    width: 0;
+    height: 0;
+    border-left: 12px solid transparent;
+    border-right: 12px solid transparent;
+    border-top: 18px solid #ffb5a0;
+    position: absolute;
+    top: 245px;
+    left: 182px;
+    filter: drop-shadow(0 2px 3px rgba(0,0,0,0.2));
+  }
+  
+  /* Mouth */
+  #mouth {
+    width: 50px;
+    height: 20px;
+    border: 3px solid #8a8a8a;
+    border-top: none;
+    border-radius: 0 0 50% 50%;
+    position: absolute;
+    top: 260px;
+    left: 172px;
+    transition: all 0.3s ease;
+  }
+  
+  #mouth::before {
+    content: '';
+    position: absolute;
+    width: 3px;
+    height: 12px;
+    background: #8a8a8a;
+    top: -3px;
+    left: 22px;
+  }
+  
+  /* Whiskers */
+  .whisker {
+    position: absolute;
+    height: 2px;
+    background: linear-gradient(90deg, #6a6a6a 0%, transparent 100%);
+    top: 235px;
+  }
+  
+  #whisker1 { width: 80px; left: 20px; transform: rotate(-5deg); }
+  #whisker2 { width: 85px; left: 15px; top: 250px; transform: rotate(-2deg); }
+  #whisker3 { width: 80px; left: 20px; top: 265px; transform: rotate(2deg); }
+  
+  #whisker4 { width: 80px; left: 300px; transform: rotate(5deg) scaleX(-1); }
+  #whisker5 { width: 85px; left: 300px; top: 250px; transform: rotate(2deg) scaleX(-1); }
+  #whisker6 { width: 80px; left: 300px; top: 265px; transform: rotate(-2deg) scaleX(-1); }
+  
+  /* Particles container */
+  #particles {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+  }
+  
+  /* Hearts */
+  .heart {
+    position: absolute;
+    font-size: 30px;
+    opacity: 0;
+    animation: floatHeart 1.5s ease-out forwards;
+  }
+  
+  @keyframes floatHeart {
+    0% {
+      opacity: 1;
+      transform: translateY(0) scale(0.5);
+    }
+    100% {
+      opacity: 0;
+      transform: translateY(-150px) scale(1.2);
+    }
+  }
+  
+  /* Exclamation marks */
+  .exclamation {
+    position: absolute;
+    font-size: 40px;
+    color: #d32f2f;
+    font-weight: bold;
+    opacity: 0;
+    animation: popExclamation 0.6s ease-out forwards;
+  }
+  
+  @keyframes popExclamation {
+    0% {
+      opacity: 1;
+      transform: scale(0) rotate(0deg);
+    }
+    50% {
+      transform: scale(1.3) rotate(-10deg);
+    }
+    100% {
+      opacity: 0;
+      transform: scale(1) rotate(10deg);
+    }
+  }
+  
+  /* Happy state */
+  .happy #mouth {
+    border-radius: 50% 50% 0 0;
+    border-top: 3px solid #8a8a8a;
+    border-bottom: none;
+    top: 268px;
+    height: 25px;
+  }
+  
+  .happy .eye {
+    height: 20px;
+    border-radius: 50% 50% 80% 80%;
+  }
+  
+  /* Angry state */
+  .angry #mouth {
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    top: 260px;
+    left: 182px;
+  }
+  
+  .angry #mouth::before {
+    display: none;
+  }
+  
+  .angry .eye {
+    width: 40px;
+    height: 25px;
+    border-radius: 50%;
+    transform: rotate(-10deg);
+  }
+  
+  .angry #right-eye {
+    transform: rotate(10deg);
+  }
+  
+  #instruction {
+    margin-top: 40px;
+    color: #5a5a5a;
+    font-size: 14px;
+    text-align: center;
+    max-width: 500px;
+    line-height: 1.8;
+  }
+  
+  .key-zone {
+    font-family: monospace;
+    background: #d0ccc4;
+    padding: 2px 6px;
+    border-radius: 3px;
+    margin: 0 2px;
+  }
+</style>
+</head>
+<body>
+  <h1>pet the calico cat</h1>
+  
+  <div id="cat-container" class="neutral">
+    <div id="particles"></div>
+    
+    <div class="whisker" id="whisker1"></div>
+    <div class="whisker" id="whisker2"></div>
+    <div class="whisker" id="whisker3"></div>
+    <div class="whisker" id="whisker4"></div>
+    <div class="whisker" id="whisker5"></div>
+    <div class="whisker" id="whisker6"></div>
+    
+    <div class="ear" id="left-ear"></div>
+    <div class="ear" id="right-ear"></div>
+    
+    <div id="face"></div>
+    <div id="patch"></div>
+    
+    <div class="eye" id="left-eye"></div>
+    <div class="eye" id="right-eye"></div>
+    
+    <div id="nose"></div>
+    <div id="mouth"></div>
+  </div>
+  
+  <div id="instruction">
+    <span class="key-zone">Q W E R A S D Z X C</span> = head (likes it)<br>
+    <span class="key-zone">T Y U F G H V B N J</span> = belly (neutral)<br>
+    <span class="key-zone">I K M O L P , . ; [</span> = tail (hates it)
+  </div>
+
+  <!-- 🔊 Audio elements -->
+  <audio id="purr-sound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_61a4b6b5c3.mp3?filename=cat-purring-6164.mp3"></audio>
+  <audio id="hiss-sound" src="https://cdn.pixabay.com/download/audio/2021/09/14/audio_2fdb594d32.mp3?filename=cat-hiss-6161.mp3"></audio>
+
+  <script>
+    const catContainer = document.getElementById("cat-container");
+    const particles = document.getElementById("particles");
+    const purrSound = document.getElementById("purr-sound");
+    const hissSound = document.getElementById("hiss-sound");
+
+    // Keyboard zones mapped to cat body parts
+    const zones = {
+      head: ["q","w","e","r","a","s","d","z","x","c"],
+      belly: ["t","y","u","f","g","h","v","b","n","j"],
+      tail: ["i","k","m","o","l","p",",",".",";","["]
+    };
+    
+    let mood = "neutral";
+    let moodTimer;
+    
+    function createHeart() {
+      const heart = document.createElement("div");
+      heart.className = "heart";
+      heart.textContent = "💕";
+      heart.style.left = Math.random() * 200 + 100 + "px";
+      heart.style.top = "100px";
+      particles.appendChild(heart);
+      setTimeout(() => heart.remove(), 1500);
+    }
+    
+    function createExclamation() {
+      const exclamation = document.createElement("div");
+      exclamation.className = "exclamation";
+      exclamation.textContent = "!";
+      exclamation.style.left = Math.random() * 300 + 300 + "px";
+      exclamation.style.top = "0px";
+      particles.appendChild(exclamation);
+      setTimeout(() => exclamation.remove(), 600);
+    }
+    
+    function setMood(newMood) {
+      catContainer.className = newMood;
+      mood = newMood;
+
+      // stop previous sounds
+      purrSound.pause();
+      hissSound.pause();
+      purrSound.currentTime = 0;
+      hissSound.currentTime = 0;
+
+      // play mood sound and animation
+      if (newMood === "happy") {
+        purrSound.volume = 0.6;
+        purrSound.play();
+        createHeart();
+        createHeart();
+      } else if (newMood === "angry") {
+        hissSound.volume = 0.8;
+        hissSound.play();
+        createExclamation();
+        createExclamation();
+        createExclamation();
       }
 
-    } else if (event.key === "c" || event.key === "C") {
-  addDomElement("img", { 
-    src: "https://media2.giphy.com/media/v1.Y2lkPTZjMDliOTUyeTcyNHM4b3Mya3pmczY5MDBldW4zcDE2dGFsYjFvdjBka2RuNGRvdiZlcD12MV9naWZzX3NlYXJjaCZjdT1n/3vcHdyb75qRIA/200w.gif" 
-  });
-    // } else if (event.key === "c" || event.key === "C") {
-  // addDomElement("span", { text: "M-E-O-W" });
-    } else if (event.key === "d" || event.key === "D") {
-      addDomElement("span", { text: "BARK!" });
-
-    } else if (event.key === "v" || event.key === "V") {
-      addDomElement("video", {
-         src: "https://i.imgur.com/Pj87n9Q.mp4",
-         width: "300",
-         height: "300",
-         autoplay: "true",
-         muted: "",
-         controls: ""
-    });
-    } else {
-      addDomElement("span", { text: event.key });
+      // Reset to neutral after 2 seconds
+      clearTimeout(moodTimer);
+      moodTimer = setTimeout(() => {
+        catContainer.className = "neutral";
+        mood = "neutral";
+        purrSound.pause();
+        hissSound.pause();
+      }, 2000);
     }
-  });
-</script>
-  </body>
+    
+    document.addEventListener("keydown", function(event) {
+      const key = event.key.toLowerCase();
+      if (zones.head.includes(key)) {
+        setMood("happy");
+      } else if (zones.belly.includes(key)) {
+        if (mood !== "happy") setMood("neutral");
+      } else if (zones.tail.includes(key)) {
+        setMood("angry");
+      }
+    });
+  </script>
+</body>
 </html>
