@@ -25,6 +25,7 @@
     position: relative;
     width: 400px;
     height: 500px;
+    transition: filter 0.3s ease;
   }
   
   /* Cat face */
@@ -37,6 +38,7 @@
     top: 100px;
     left: 50px;
     box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    transition: all 0.3s ease;
   }
   
   /* Orange patch */
@@ -49,6 +51,7 @@
     top: 120px;
     right: 60px;
     opacity: 0.8;
+    transition: all 0.3s ease;
   }
   
   /* Ears */
@@ -60,6 +63,7 @@
     border-bottom: 80px solid #f5e6d3;
     position: absolute;
     filter: drop-shadow(0 3px 5px rgba(0,0,0,0.2));
+    transition: all 0.3s ease;
   }
   
   .ear::after {
@@ -169,6 +173,48 @@
   #whisker5 { width: 85px; left: 300px; top: 250px; transform: rotate(2deg) scaleX(-1); }
   #whisker6 { width: 80px; left: 300px; top: 265px; transform: rotate(-2deg) scaleX(-1); }
   
+  /* Glasses overlay */
+  #glasses {
+    position: absolute;
+    top: 175px;
+    left: 105px;
+    width: 150px;
+    height: 60px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+  
+  .curious #glasses {
+    opacity: 1;
+  }
+  
+  .glasses-frame {
+    position: absolute;
+    width: 55px;
+    height: 55px;
+    border: 4px solid #2a2a2a;
+    border-radius: 50%;
+    background: rgba(200, 230, 255, 0.3);
+  }
+  
+  #left-lens {
+    left: 5px;
+  }
+  
+  #right-lens {
+    right: 5px;
+  }
+  
+  .glasses-bridge {
+    position: absolute;
+    width: 20px;
+    height: 4px;
+    background: #2a2a2a;
+    top: 27px;
+    left: 65px;
+  }
+  
   /* Particles container */
   #particles {
     position: absolute;
@@ -222,6 +268,26 @@
     }
   }
   
+  /* Meow bubble */
+  .meow {
+    position: absolute;
+    font-size: 24px;
+    color: #5a5a5a;
+    opacity: 0;
+    animation: meowBubble 1s ease-out forwards;
+  }
+  
+  @keyframes meowBubble {
+    0% {
+      opacity: 1;
+      transform: translateY(0) scale(0.8);
+    }
+    100% {
+      opacity: 0;
+      transform: translateY(-80px) scale(1);
+    }
+  }
+  
   /* Happy state */
   .happy #mouth {
     border-radius: 50% 50% 0 0;
@@ -234,6 +300,18 @@
   .happy .eye {
     height: 20px;
     border-radius: 50% 50% 80% 80%;
+  }
+  
+  /* Content state (neutral response) */
+  .content #mouth {
+    width: 45px;
+    height: 18px;
+    top: 263px;
+    left: 174px;
+  }
+  
+  .content .eye {
+    height: 35px;
   }
   
   /* Angry state */
@@ -260,6 +338,103 @@
     transform: rotate(10deg);
   }
   
+  /* ENRAGED state (! easter egg) */
+  .enraged #face {
+    background: radial-gradient(circle at 30% 40%, #ff6b6b 0%, #ee5555 30%, #d32f2f 60%, #b71c1c 100%);
+    animation: shake 0.5s infinite;
+  }
+  
+  .enraged #patch {
+    background: #8b0000;
+  }
+  
+  .enraged .ear {
+    border-bottom-color: #d32f2f;
+  }
+  
+  .enraged .eye {
+    width: 45px;
+    height: 20px;
+    background: radial-gradient(circle, #ff0000 0%, #8b0000 50%, #000000 55%, #000000 100%);
+    transform: rotate(-15deg);
+  }
+  
+  .enraged #right-eye {
+    transform: rotate(15deg);
+  }
+  
+  .enraged #mouth {
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    border-color: #000;
+    border-width: 4px;
+    top: 255px;
+    left: 177px;
+  }
+  
+  @keyframes shake {
+    0%, 100% { transform: translate(0, 0) rotate(0deg); }
+    25% { transform: translate(-5px, -3px) rotate(-2deg); }
+    75% { transform: translate(5px, 3px) rotate(2deg); }
+  }
+  
+  /* DEAD state (9 easter egg) */
+  .dead {
+    filter: grayscale(100%);
+  }
+  
+  .dead #face {
+    transform: rotate(90deg);
+  }
+  
+  .dead .eye {
+    width: 35px;
+    height: 8px;
+    background: #2a2a2a;
+  }
+  
+  .dead .eye::before {
+    display: none;
+  }
+  
+  .dead #mouth {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #2a2a2a;
+    border: none;
+    top: 265px;
+    left: 193px;
+  }
+  
+  .dead #mouth::before {
+    display: none;
+  }
+  
+  /* CURIOUS state (? easter egg) */
+  .curious .eye {
+    width: 35px;
+    height: 45px;
+    border-radius: 50%;
+  }
+  
+  .curious #mouth {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    top: 262px;
+    left: 187px;
+  }
+  
+  .curious #left-ear {
+    transform: rotate(-5deg);
+  }
+  
+  .curious #right-ear {
+    transform: rotate(5deg);
+  }
+  
   #instruction {
     margin-top: 40px;
     color: #5a5a5a;
@@ -276,6 +451,31 @@
     border-radius: 3px;
     margin: 0 2px;
   }
+  
+  .easter-egg {
+    margin-top: 10px;
+    font-size: 11px;
+    color: #999;
+    font-style: italic;
+  }
+  
+  #lives-counter {
+    margin-top: 20px;
+    font-size: 16px;
+    color: #5a5a5a;
+    font-weight: bold;
+  }
+  
+  .life-icon {
+    display: inline-block;
+    margin: 0 2px;
+    font-size: 18px;
+  }
+  
+  .life-lost {
+    opacity: 0.3;
+    filter: grayscale(100%);
+  }
 </style>
 </head>
 <body>
@@ -283,6 +483,13 @@
   
   <div id="cat-container" class="neutral">
     <div id="particles"></div>
+    
+    <!-- Glasses (for curious state) -->
+    <div id="glasses">
+      <div class="glasses-frame" id="left-lens"></div>
+      <div class="glasses-bridge"></div>
+      <div class="glasses-frame" id="right-lens"></div>
+    </div>
     
     <div class="whisker" id="whisker1"></div>
     <div class="whisker" id="whisker2"></div>
@@ -308,17 +515,25 @@
     <span class="key-zone">Q W E R A S D Z X C</span> = head (likes it)<br>
     <span class="key-zone">T Y U F G H V B N J</span> = belly (neutral)<br>
     <span class="key-zone">I K M O L P , . ; [</span> = tail (hates it)
+    <div class="easter-egg">psst... try pressing 9, !, or ?</div>
+  </div>
+  
+  <div id="lives-counter">
+    <span id="lives-display"></span>
   </div>
 
   <!-- 🔊 Audio elements -->
   <audio id="purr-sound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_61a4b6b5c3.mp3?filename=cat-purring-6164.mp3"></audio>
   <audio id="hiss-sound" src="https://cdn.pixabay.com/download/audio/2021/09/14/audio_2fdb594d32.mp3?filename=cat-hiss-6161.mp3"></audio>
+  <audio id="meow-sound" src="https://cdn.pixabay.com/download/audio/2022/03/10/audio_c610b50bc3.mp3?filename=cat-meow-6226.mp3"></audio>
 
   <script>
     const catContainer = document.getElementById("cat-container");
     const particles = document.getElementById("particles");
     const purrSound = document.getElementById("purr-sound");
     const hissSound = document.getElementById("hiss-sound");
+    const meowSound = document.getElementById("meow-sound");
+    const livesDisplay = document.getElementById("lives-display");
 
     // Keyboard zones mapped to cat body parts
     const zones = {
@@ -329,6 +544,32 @@
     
     let mood = "neutral";
     let moodTimer;
+    let isDead = false;
+    let livesLeft = 9;
+    
+    // Initialize lives display
+    function updateLivesDisplay() {
+      livesDisplay.innerHTML = "";
+      for (let i = 0; i < 9; i++) {
+        const life = document.createElement("span");
+        life.className = "life-icon" + (i >= livesLeft ? " life-lost" : "");
+        life.textContent = "💚";
+        livesDisplay.appendChild(life);
+      }
+      
+      if (livesLeft > 0) {
+        const text = document.createElement("span");
+        text.textContent = ` ${livesLeft} ${livesLeft === 1 ? 'life' : 'lives'} remaining`;
+        livesDisplay.appendChild(text);
+      } else {
+        const text = document.createElement("span");
+        text.textContent = " R.I.P. - Refresh page to revive";
+        text.style.color = "#d32f2f";
+        livesDisplay.appendChild(text);
+      }
+    }
+    
+    updateLivesDisplay();
     
     function createHeart() {
       const heart = document.createElement("div");
@@ -344,21 +585,58 @@
       const exclamation = document.createElement("div");
       exclamation.className = "exclamation";
       exclamation.textContent = "!";
-      exclamation.style.left = Math.random() * 300 + 300 + "px";
-      exclamation.style.top = "0px";
+      exclamation.style.left = Math.random() * 300 + 50 + "px";
+      exclamation.style.top = "60px";
       particles.appendChild(exclamation);
       setTimeout(() => exclamation.remove(), 600);
     }
     
+    function createMeow() {
+      const meow = document.createElement("div");
+      meow.className = "meow";
+      meow.textContent = "meow~";
+      meow.style.left = Math.random() * 150 + 125 + "px";
+      meow.style.top = "120px";
+      particles.appendChild(meow);
+      setTimeout(() => meow.remove(), 1000);
+    }
+    
+    function createAngel() {
+      const angel = document.createElement("div");
+      angel.className = "heart";
+      angel.textContent = "😇";
+      angel.style.fontSize = "50px";
+      angel.style.left = "175px";
+      angel.style.top = "30px";
+      particles.appendChild(angel);
+      setTimeout(() => angel.remove(), 3000);
+    }
+    
+    function createQuestionMark() {
+      const question = document.createElement("div");
+      question.className = "meow";
+      question.textContent = "?";
+      question.style.fontSize = "35px";
+      question.style.color = "#5a5a5a";
+      question.style.left = Math.random() * 150 + 125 + "px";
+      question.style.top = "80px";
+      particles.appendChild(question);
+      setTimeout(() => question.remove(), 1000);
+    }
+    
     function setMood(newMood) {
+      if (isDead) return; // can't change mood when dead
+      
       catContainer.className = newMood;
       mood = newMood;
 
       // stop previous sounds
       purrSound.pause();
       hissSound.pause();
+      meowSound.pause();
       purrSound.currentTime = 0;
       hissSound.currentTime = 0;
+      meowSound.currentTime = 0;
 
       // play mood sound and animation
       if (newMood === "happy") {
@@ -372,24 +650,81 @@
         createExclamation();
         createExclamation();
         createExclamation();
+      } else if (newMood === "content") {
+        meowSound.volume = 0.5;
+        meowSound.play();
+        createMeow();
+      } else if (newMood === "enraged") {
+        hissSound.volume = 1.0;
+        hissSound.play();
+        // Create multiple angry exclamations
+        for (let i = 0; i < 8; i++) {
+          setTimeout(() => createExclamation(), i * 100);
+        }
+      } else if (newMood === "curious") {
+        meowSound.volume = 0.4;
+        meowSound.play();
+        createQuestionMark();
+        createQuestionMark();
+      } else if (newMood === "dead") {
+        isDead = true;
+        livesLeft--;
+        updateLivesDisplay();
+        createAngel();
+        
+        // Check if out of lives
+        if (livesLeft <= 0) {
+          // Dead permanently
+          return;
+        }
+        
+        // Revive after 3 seconds if lives remain
+        setTimeout(() => {
+          isDead = false;
+          catContainer.className = "neutral";
+          mood = "neutral";
+        }, 3000);
+        
+        return; // don't set timeout to return to neutral
       }
 
       // Reset to neutral after 2 seconds
       clearTimeout(moodTimer);
       moodTimer = setTimeout(() => {
-        catContainer.className = "neutral";
-        mood = "neutral";
-        purrSound.pause();
-        hissSound.pause();
+        if (!isDead) {
+          catContainer.className = "neutral";
+          mood = "neutral";
+          purrSound.pause();
+          hissSound.pause();
+          meowSound.pause();
+        }
       }, 2000);
     }
     
     document.addEventListener("keydown", function(event) {
       const key = event.key.toLowerCase();
+      
+      // Easter eggs
+      if (key === "9") {
+        setMood("dead");
+        return;
+      }
+      
+      if (event.key === "!") {
+        setMood("enraged");
+        return;
+      }
+      
+      if (event.key === "?") {
+        setMood("curious");
+        return;
+      }
+      
+      // Normal interactions
       if (zones.head.includes(key)) {
         setMood("happy");
       } else if (zones.belly.includes(key)) {
-        if (mood !== "happy") setMood("neutral");
+        setMood("content");
       } else if (zones.tail.includes(key)) {
         setMood("angry");
       }
