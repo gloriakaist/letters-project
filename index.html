@@ -625,6 +625,7 @@
   <audio id="purr-sound" src="cat-purr-33835.mp3"></audio>
   <audio id="hiss-sound" src="very-angry-cat-101289.mp3"></audio>
   <audio id="meow-sound" src="cat-meow-297927.mp3"></audio>
+  <audio id="curious-sound" src="shrt-meow-352842.mp3"></audio>
   <audio id="dead-sound" src="negative_beeps-6008.mp3"></audio>
 
   <script>
@@ -634,6 +635,7 @@
     const purrSound = document.getElementById("purr-sound");
     const hissSound = document.getElementById("hiss-sound");
     const meowSound = document.getElementById("meow-sound");
+    const curiousSound = document.getElementById("curious-sound");
     const deadSound = document.getElementById("dead-sound");
     const livesDisplay = document.getElementById("lives-display");
 
@@ -821,8 +823,8 @@
           setTimeout(() => createExclamation(), i * 100);
         }
       } else if (newMood === "curious") {
-        meowSound.volume = 0.4;
-        meowSound.play();
+        curiousSound.volume = 0.4;
+        curiousSound.play();
         createQuestionMark();
         createQuestionMark();
       } else if (newMood === "dead") {
