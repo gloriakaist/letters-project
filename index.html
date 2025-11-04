@@ -18,7 +18,7 @@
   h1 {
     color: #5a5a5a;
     font-weight: normal;
-    margin-bottom: 40px;
+    margin-bottom: 0px;
   }
   
   #cat-container {
@@ -155,6 +155,15 @@
     background: #8a8a8a;
     top: -3px;
     left: 22px;
+  }
+
+  #keyboard-image {
+    display: block;
+    width: 400px;
+    max-width: 90%;
+    margin: 10px auto;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
   }
   
   /* Whiskers */
@@ -412,6 +421,92 @@
     display: none;
   }
   
+  /* SCRATCH ATTACK overlay */
+  #scratch-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0);
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.1s;
+  }
+  
+  #scratch-overlay.active {
+    opacity: 1;
+    background: rgba(139, 0, 0, 0.3);
+  }
+  
+  .scratch-mark {
+    position: absolute;
+    width: 300px;
+    height: 15px;
+    background: linear-gradient(90deg, transparent 0%, #8b0000 10%, #ff0000 50%, #8b0000 90%, transparent 100%);
+    transform-origin: left center;
+    opacity: 0;
+    box-shadow: 0 0 20px rgba(139, 0, 0, 0.8);
+  }
+  
+  .scratch-mark::before,
+  .scratch-mark::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: inherit;
+  }
+  
+  .scratch-mark::before {
+    top: 25px;
+    transform: rotate(-3deg);
+  }
+  
+  .scratch-mark::after {
+    top: 50px;
+    transform: rotate(2deg);
+  }
+  
+  .blood-splatter {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    background: radial-gradient(circle, #8b0000 0%, #ff0000 40%, transparent 70%);
+    border-radius: 50%;
+    opacity: 0;
+  }
+  
+  @keyframes scratchSlash {
+    0% {
+      opacity: 0;
+      transform: translateX(-100%) rotate(-20deg) scale(0.5);
+    }
+    20% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0.8;
+      transform: translateX(100vw) rotate(-20deg) scale(1);
+    }
+  }
+  
+  @keyframes bloodSplat {
+    0% {
+      opacity: 0;
+      transform: scale(0);
+    }
+    50% {
+      opacity: 1;
+      transform: scale(1.5);
+    }
+    100% {
+      opacity: 0.6;
+      transform: scale(1);
+    }
+  }
+  
   /* CURIOUS state (? easter egg) */
   .curious .eye {
     width: 35px;
@@ -436,7 +531,7 @@
   }
   
   #instruction {
-    margin-top: 40px;
+    margin-top: 1px;
     color: #5a5a5a;
     font-size: 14px;
     text-align: center;
@@ -453,14 +548,14 @@
   }
   
   .easter-egg {
-    margin-top: 10px;
+    margin-top: 1px;
     font-size: 11px;
     color: #999;
     font-style: italic;
   }
   
   #lives-counter {
-    margin-top: 20px;
+    margin-top: 1px;
     font-size: 16px;
     color: #5a5a5a;
     font-weight: bold;
@@ -479,7 +574,7 @@
 </style>
 </head>
 <body>
-  <h1>pet the calico cat</h1>
+  <h1>9 lives...</h1>
   
   <div id="cat-container" class="neutral">
     <div id="particles"></div>
@@ -512,27 +607,34 @@
   </div>
   
   <div id="instruction">
-    <span class="key-zone">Q W E R A S D Z X C</span> = head (likes it)<br>
-    <span class="key-zone">T Y U F G H V B N J</span> = belly (neutral)<br>
-    <span class="key-zone">I K M O L P , . ; [</span> = tail (hates it)
-    <div class="easter-egg">psst... try pressing 9, !, or ?</div>
+    <img src="keyboard.jpg" alt="Keyboard zones showing cat parts" id="keyboard-image">
+    <div class="easter-egg">
+      psst... try pressing 9, !, or ?<br>
+      (but don't overdo the petting... cats have limits!)
+    </div>
   </div>
   
   <div id="lives-counter">
     <span id="lives-display"></span>
   </div>
+  
+  <!-- Scratch attack overlay -->
+  <div id="scratch-overlay"></div>
 
   <!-- 🔊 Audio elements -->
-  <audio id="purr-sound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_61a4b6b5c3.mp3?filename=cat-purring-6164.mp3"></audio>
-  <audio id="hiss-sound" src="https://cdn.pixabay.com/download/audio/2021/09/14/audio_2fdb594d32.mp3?filename=cat-hiss-6161.mp3"></audio>
-  <audio id="meow-sound" src="https://cdn.pixabay.com/download/audio/2022/03/10/audio_c610b50bc3.mp3?filename=cat-meow-6226.mp3"></audio>
+  <audio id="purr-sound" src="cat-purr-33835.mp3"></audio>
+  <audio id="hiss-sound" src="very-angry-cat-101289.mp3"></audio>
+  <audio id="meow-sound" src="cat-meow-297927.mp3"></audio>
+  <audio id="dead-sound" src="negative_beeps-6008.mp3"></audio>
 
   <script>
     const catContainer = document.getElementById("cat-container");
     const particles = document.getElementById("particles");
+    const scratchOverlay = document.getElementById("scratch-overlay");
     const purrSound = document.getElementById("purr-sound");
     const hissSound = document.getElementById("hiss-sound");
     const meowSound = document.getElementById("meow-sound");
+    const deadSound = document.getElementById("dead-sound");
     const livesDisplay = document.getElementById("lives-display");
 
     // Keyboard zones mapped to cat body parts
@@ -546,6 +648,13 @@
     let moodTimer;
     let isDead = false;
     let livesLeft = 9;
+    
+    // Counters for excessive petting
+    let headBellyPetCount = 0;
+    let tailPetCount = 0;
+    let enragedCount = 0;
+    let petResetTimer;
+    let enragedResetTimer;
     
     // Initialize lives display
     function updateLivesDisplay() {
@@ -624,6 +733,56 @@
       setTimeout(() => question.remove(), 1000);
     }
     
+    function triggerScratchAttack() {
+      // Make cat enraged first
+      setMood("enraged");
+      
+      // Activate overlay
+      scratchOverlay.classList.add("active");
+      
+      // Create multiple scratch marks
+      for (let i = 0; i < 5; i++) {
+        setTimeout(() => {
+          const scratch = document.createElement("div");
+          scratch.className = "scratch-mark";
+          scratch.style.top = Math.random() * 80 + 10 + "vh";
+          scratch.style.left = "-300px";
+          scratch.style.animation = `scratchSlash ${0.6 + Math.random() * 0.3}s ease-out forwards`;
+          scratch.style.animationDelay = i * 0.1 + "s";
+          scratchOverlay.appendChild(scratch);
+          
+          // Add blood splatters
+          setTimeout(() => {
+            for (let j = 0; j < 3; j++) {
+              const blood = document.createElement("div");
+              blood.className = "blood-splatter";
+              blood.style.left = Math.random() * 80 + 10 + "vw";
+              blood.style.top = Math.random() * 80 + 10 + "vh";
+              blood.style.animation = `bloodSplat 0.5s ease-out forwards`;
+              blood.style.animationDelay = Math.random() * 0.3 + "s";
+              scratchOverlay.appendChild(blood);
+            }
+          }, 200);
+        }, i * 150);
+      }
+      
+      // Play intense hiss
+      hissSound.volume = 1.0;
+      hissSound.play();
+      
+      // Clear overlay after attack
+      setTimeout(() => {
+        scratchOverlay.classList.remove("active");
+        scratchOverlay.innerHTML = "";
+        
+        // Kill the cat after the attack
+        setTimeout(() => {
+          setMood("dead");
+          tailPetCount = 0;
+        }, 500);
+      }, 2500);
+    }
+    
     function setMood(newMood) {
       if (isDead) return; // can't change mood when dead
       
@@ -668,6 +827,8 @@
         createQuestionMark();
       } else if (newMood === "dead") {
         isDead = true;
+        deadSound.volume = 0.6;
+        deadSound.play();
         livesLeft--;
         updateLivesDisplay();
         createAngel();
@@ -688,7 +849,7 @@
         return; // don't set timeout to return to neutral
       }
 
-      // Reset to neutral after 2 seconds
+      // Reset to neutral after 5 seconds
       clearTimeout(moodTimer);
       moodTimer = setTimeout(() => {
         if (!isDead) {
@@ -698,7 +859,7 @@
           hissSound.pause();
           meowSound.pause();
         }
-      }, 2000);
+      }, 5000);
     }
     
     document.addEventListener("keydown", function(event) {
@@ -712,6 +873,21 @@
       
       if (event.key === "!") {
         setMood("enraged");
+        enragedCount++;
+        
+        // Reset counter after 3 seconds
+        clearTimeout(enragedResetTimer);
+        enragedResetTimer = setTimeout(() => {
+          enragedCount = 0;
+        }, 3000);
+        
+        // Too much rage kills the cat (3+ enraged states)
+        if (enragedCount >= 3) {
+          setTimeout(() => {
+            setMood("dead");
+            enragedCount = 0;
+          }, 500);
+        }
         return;
       }
       
@@ -720,13 +896,65 @@
         return;
       }
       
-      // Normal interactions
+      // Normal interactions with excessive petting detection
       if (zones.head.includes(key)) {
         setMood("happy");
+        headBellyPetCount++;
+        
+        // Reset counter after 2 seconds of no petting
+        clearTimeout(petResetTimer);
+        petResetTimer = setTimeout(() => {
+          headBellyPetCount = 0;
+        }, 2000);
+        
+        // Too much happiness kills the cat (50+ pets)
+        if (headBellyPetCount >= 50) {
+          setTimeout(() => {
+            setMood("dead");
+            headBellyPetCount = 0;
+          }, 500);
+        }
       } else if (zones.belly.includes(key)) {
         setMood("content");
+        headBellyPetCount++;
+        
+        // Reset counter after 2 seconds of no petting
+        clearTimeout(petResetTimer);
+        petResetTimer = setTimeout(() => {
+          headBellyPetCount = 0;
+        }, 2000);
+        
+        // Too much happiness kills the cat (30+ pets)
+        if (headBellyPetCount >= 30) {
+          setTimeout(() => {
+            setMood("dead");
+            headBellyPetCount = 0;
+          }, 500);
+        }
       } else if (zones.tail.includes(key)) {
+        tailPetCount++;
+        
+        // Trigger scratch attack at 8 tail pets
+        if (tailPetCount >= 8) {
+          triggerScratchAttack();
+          return; // Exit early, don't show normal angry state
+        }
+        
         setMood("angry");
+        
+        // Reset counter after 4 seconds of no petting
+        clearTimeout(petResetTimer);
+        petResetTimer = setTimeout(() => {
+          tailPetCount = 0;
+        }, 2000);
+        
+        // Too much tail petting kills the cat (15+ pets - though scratch happens at 8)
+        if (tailPetCount >= 20) {
+          setTimeout(() => {
+            setMood("dead");
+            tailPetCount = 0;
+          }, 500);
+        }
       }
     });
   </script>
