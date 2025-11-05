@@ -6,8 +6,8 @@
 <style>
   body {
     margin: 0;
-    padding: 40px;
-    font-family: Arial, sans-serif;
+    padding: 10px;
+    font-family: Lucida Console, monospace;
     background: #e8e4dc;
     min-height: 100vh;
     display: flex;
@@ -609,8 +609,9 @@
   <div id="instruction">
     <img src="keyboard.jpg" alt="Keyboard zones showing cat parts" id="keyboard-image">
     <div class="easter-egg">
-      psst... try pressing 9, !, or ?<br>
-      (but don't overdo the petting... cats have limits!)
+      psst...9, !, ?...<br>
+      (don't overdo the petting... cats have limits!)<br>
+      <strong>find the treats 🍪🐟(</strong>
     </div>
   </div>
   
@@ -643,7 +644,9 @@
     const zones = {
       head: ["q","w","e","r","a","s","d","z","x","c"],
       belly: ["t","y","u","f","g","h","v","b","n","j"],
-      tail: ["i","k","m","o","l","p",",",".",";","["]
+      tail: ["i","k","m","o","l","p",",",".",";","["],
+      treats: ["*","0","+"],  // Number keys for treats
+      fish: ["4", "7","~"]              // Number keys for fish
     };
     
     let mood = "neutral";
@@ -721,6 +724,41 @@
       angel.style.top = "30px";
       particles.appendChild(angel);
       setTimeout(() => angel.remove(), 3000);
+    }
+    
+    function createTreat() {
+      const treat = document.createElement("div");
+      treat.className = "heart";
+      treat.textContent = "🍪";
+      treat.style.fontSize = "40px";
+      treat.style.left = Math.random() * 200 + 100 + "px";
+      treat.style.top = "100px";
+      particles.appendChild(treat);
+      setTimeout(() => treat.remove(), 1500);
+    }
+    
+    function createFish() {
+      const fish = document.createElement("div");
+      fish.className = "heart";
+      fish.textContent = "🐟";
+      fish.style.fontSize = "40px";
+      fish.style.left = Math.random() * 200 + 100 + "px";
+      fish.style.top = "100px";
+      particles.appendChild(fish);
+      setTimeout(() => fish.remove(), 1500);
+    }
+    
+    function createLifeGain() {
+      const lifeGain = document.createElement("div");
+      lifeGain.className = "heart";
+      lifeGain.textContent = "+1 LIFE! 💚";
+      lifeGain.style.fontSize = "30px";
+      lifeGain.style.color = "#4caf50";
+      lifeGain.style.fontWeight = "bold";
+      lifeGain.style.left = "100px";
+      lifeGain.style.top = "100px";
+      particles.appendChild(lifeGain);
+      setTimeout(() => lifeGain.remove(), 1500);
     }
     
     function createQuestionMark() {
@@ -801,7 +839,7 @@
 
       // play mood sound and animation
       if (newMood === "happy") {
-        purrSound.volume = 0.6;
+        purrSound.volume = 0.9;
         purrSound.play();
         createHeart();
         createHeart();
@@ -823,7 +861,7 @@
           setTimeout(() => createExclamation(), i * 100);
         }
       } else if (newMood === "curious") {
-        curiousSound.volume = 0.4;
+        curiousSound.volume = 0.3;
         curiousSound.play();
         createQuestionMark();
         createQuestionMark();
@@ -866,6 +904,56 @@
     
     document.addEventListener("keydown", function(event) {
       const key = event.key.toLowerCase();
+      
+      // Check for feeding (treats and fish)
+      if (zones.treats.includes(key) || zones.fish.includes(key)) {
+        if (livesLeft < 9) {
+          // Gain a life!
+          livesLeft++;
+          updateLivesDisplay();
+          
+          // Show appropriate food animation
+          if (zones.treats.includes(key)) {
+            createTreat();
+            createTreat();
+          } else {
+            createFish();
+            createFish();
+          }
+          
+          createLifeGain();
+          
+          // Revive if dead
+          if (isDead) {
+            isDead = false;
+            catContainer.className = "happy";
+            mood = "happy";
+            purrSound.volume = 0.9;
+            purrSound.play();
+            createHeart();
+            createHeart();
+            
+            // Return to neutral after showing happiness
+            setTimeout(() => {
+              catContainer.className = "neutral";
+              mood = "neutral";
+              purrSound.pause();
+            }, 3000);
+          } else {
+            // Cat is happy about the food
+            setMood("happy");
+          }
+        } else {
+          // Already at max lives, just show happy
+          if (zones.treats.includes(key)) {
+            createTreat();
+          } else {
+            createFish();
+          }
+          setMood("content");
+        }
+        return;
+      }
       
       // Easter eggs
       if (key === "9") {
